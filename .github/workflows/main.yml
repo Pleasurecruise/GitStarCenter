@@ -37,13 +37,13 @@ jobs:
       uses: appleboy/ssh-action@v0.1.6
       with:
           host: 121.36.197.56
-          username: root
+          username: pleasure
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            scp -o StrictHostKeyChecking=no target/GitStarCenter-0.0.1-SNAPSHOT.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/mnt/data/GitStarCenter/
+            scp -o StrictHostKeyChecking=no target/GitStarCenter-0.0.1-SNAPSHOT.jar pleasure@121.36.197.56:/mnt/data/GitStarCenter/
 
-            ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            ssh -o StrictHostKeyChecking=no pleasure@121.36.197.56 << 'EOF'
 
               cd /mnt/data/GitStarCenter
 
