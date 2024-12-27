@@ -32,7 +32,7 @@ jobs:
       with:
           host: 121.36.197.56
           username: pleasure
-          key: Wym20050305@
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
             scp /target/GitStarCenter-0.0.1-SNAPSHOT.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/mnt/data/GitStarCenter
