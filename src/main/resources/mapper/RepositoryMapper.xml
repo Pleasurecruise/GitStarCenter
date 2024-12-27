@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.yiming1234.gitstarcenter.mapper.RepositoryMapper">
+    <select id="selectByUserId" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id = #{userId}
+    </select>
+    <select id="selectByRepoAuthAndRepoName" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE repo_auth = #{repoAuth} AND repo_name = #{repoName}
+    </select>
+</mapper>

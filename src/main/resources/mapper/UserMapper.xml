@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.yiming1234.gitstarcenter.mapper.UserMapper">
+    <select id="selectStarredRepositoriesBySourceUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="sourceUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="selectForkedRepositoriesBySourceUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="sourceUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="selectWatchedRepositoriesBySourceUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="sourceUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="selectFollowedRepositoriesBySourceUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="sourceUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="selectStarredRepositoriesByTargetUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="targetUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="selectForkedRepositoriesByTargetUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="targetUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="selectWatchedRepositoriesByTargetUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="targetUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+    <select id="selectFollowedRepositoriesByTargetUserIds" resultType="cn.yiming1234.gitstarcenter.entity.Repository">
+        SELECT * FROM repositories WHERE user_id IN
+        <foreach item="userId" collection="targetUserIds" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+</mapper>

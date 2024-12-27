@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>POST Request Form</title>
+</head>
+<body>
+<form action="/star" method="POST">
+    <label for="repoAuth">Repository Author:</label>
+    <input type="text" id="repoAuth" name="repoAuth" required>
+    <label for="repoName">Repository Name:</label>
+    <input type="text" id="repoName" name="repoName" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <label for="targetUserId">Target User ID:</label>
+    <input type="number" id="targetUserId" name="targetUserId" required>
+    <button type="submit">Star</button>
+</form>
+
+<form action="/unstar" method="POST">
+    <label for="repoAuth">Repository Author:</label>
+    <input type="text" id="repoAuth" name="repoAuth" required>
+    <label for="repoName">Repository Name:</label>
+    <input type="text" id="repoName" name="repoName" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <label for="targetUserId">Target User ID:</label>
+    <input type="number" id="targetUserId" name="targetUserId" required>
+    <button type="submit">Unstar</button>
+</form>
+
+<form action="/fork" method="POST">
+    <label for="repoAuth">Repository Author:</label>
+    <input type="text" id="repoAuth" name="repoAuth" required>
+    <label for="repoName">Repository Name:</label>
+    <input type="text" id="repoName" name="repoName" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <label for="targetUserId">Target User ID:</label>
+    <input type="number" id="targetUserId" name="targetUserId" required>
+    <button type="submit">Fork</button>
+</form>
+
+<form action="/unfork" method="POST">
+    <label for="repoAuth">Repository Author:</label>
+    <input type="text" id="repoAuth" name="repoAuth" required>
+    <label for="repoName">Repository Name:</label>
+    <input type="text" id="repoName" name="repoName" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <label for="targetUserId">Target User ID:</label>
+    <input type="number" id="targetUserId" name="targetUserId" required>
+    <button type="submit">Unfork</button>
+</form>
+
+<form action="/watch" method="POST">
+    <label for="repoAuth">Repository Author:</label>
+    <input type="text" id="repoAuth" name="repoAuth" required>
+    <label for="repoName">Repository Name:</label>
+    <input type="text" id="repoName" name="repoName" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <label for="targetUserId">Target User ID:</label>
+    <input type="number" id="targetUserId" name="targetUserId" required>
+    <button type="submit">Watch</button>
+</form>
+
+<form action="/unwatch" method="POST">
+    <label for="repoAuth">Repository Author:</label>
+    <input type="text" id="repoAuth" name="repoAuth" required>
+    <label for="repoName">Repository Name:</label>
+    <input type="text" id="repoName" name="repoName" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <label for="targetUserId">Target User ID:</label>
+    <input type="number" id="targetUserId" name="targetUserId" required>
+    <button type="submit">Unwatch</button>
+</form>
+
+<form action="/follow" method="POST">
+    <label for="targetUsername">Target Username:</label>
+    <input type="text" id="targetUsername" name="targetUsername" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <button type="submit">Follow</button>
+</form>
+
+<form action="/unfollow" method="POST">
+    <label for="targetUsername">Target Username:</label>
+    <input type="text" id="targetUsername" name="targetUsername" required>
+    <label for="sourceUserId">Source User ID:</label>
+    <input type="number" id="sourceUserId" name="sourceUserId" required>
+    <button type="submit">Unfollow</button>
+</form>
+
+<form action="/bind-repository" method="POST">
+    <label for="repoUrl">Repository URL:</label>
+    <input type="text" id="repoUrl" name="repoUrl" required>
+    <button type="submit">Bind Repository</button>
+</form>
+</body>
+</html>

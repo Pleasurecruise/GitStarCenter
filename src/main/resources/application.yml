@@ -1,0 +1,70 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: GitStarCenter
+  mvc:
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/, classpath:/resources/, classpath:/static/, classpath:/public/
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${yiming1234.datasource.host}:${yiming1234.datasource.port}/${yiming1234.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${yiming1234.datasource.username}
+    password: ${yiming1234.datasource.password}
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            scope:
+              - read:user
+              - public_repo
+              - user:follow
+            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+
+logging:
+  level:
+    root: info
+    cn.yiming1234.gitstarcenter: info
+    org.springframework.security: debug
+    org.springframework.web: debug
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: cn.yiming1234.gitstarcenter.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+app:
+  auth:
+    tokenSecret: 04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
+    tokenExpirationMsec: 3600000
+  cors:
+    allowedOrigins: http://localhost:5173,http://localhost:8080
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:5173/oauth2/redirect
+      - myandroidapp://oauth2/redirect
+      - myiosapp://oauth2/redirect
+
+yiming1234:
+  mail:
+    host: smtp.qq.com
+    port: 465
+    from: pleasurecruise@qq.com
+    subject: Git Star Center 仓库互动提醒

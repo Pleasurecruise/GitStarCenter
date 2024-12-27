@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.yiming1234.gitstarcenter.mapper.InteractionMapper">
+        <select id="selectBySourceUserId" resultType="cn.yiming1234.gitstarcenter.entity.Interaction">
+            SELECT * FROM interactions WHERE source_user_id = #{sourceUserId} ORDER BY updated_at DESC
+        </select>
+    <select id="selectByTargetUserId" resultType="cn.yiming1234.gitstarcenter.entity.Interaction">
+            SELECT * FROM interactions WHERE target_user_id = #{targetUserId} ORDER BY updated_at DESC
+        </select>
+        <select id="selectBySourceUserIdAndTargetUserId" resultType="cn.yiming1234.gitstarcenter.entity.Interaction">
+            SELECT * FROM interactions WHERE source_user_id = #{sourceUserId} AND target_user_id = #{targetUserId}
+        </select>
+</mapper>
