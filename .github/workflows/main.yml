@@ -1,0 +1,40 @@
+name: SpringBoot Built
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v3
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.2.1
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+    - name: maven-settings-xml-action
+      uses: whelk-io/maven-settings-xml-action@v20
+      with:
+        repositories: ''
+        servers: ''
+    - name: Build with Maven
+      run: mvn package -B -DskipTests --file pom.xml
+
+    - name: Deploy to production server
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+          host: 121.36.197.56
+          username: pleasure
+          key: Wym20050305@
+          port: 22
+          script: |
+            scp /target/GitStarCenter-0.0.1-SNAPSHOT.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/mnt/data/GitStarCenter
+            cd /mnt/data/GitStarCenter
+            java -jar GitStarCenter-0.0.1-SNAPSHOT.jar
