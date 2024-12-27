@@ -28,6 +28,11 @@ jobs:
     - name: Build with Maven
       run: mvn package -B -DskipTests --file pom.xml
 
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
     - name: Deploy to production server
       uses: appleboy/ssh-action@v0.1.6
       with:
@@ -36,6 +41,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            scp /target/GitStarCenter-0.0.1-SNAPSHOT.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/mnt/data/GitStarCenter
-            cd /mnt/data/GitStarCenter
-            java -jar GitStarCenter-0.0.1-SNAPSHOT.jar
+            scp -o StrictHostKeyChecking=no target/GitStarCenter-0.0.1-SNAPSHOT.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/mnt/data/GitStarCenter/
+
+            ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+
+              cd /mnt/data/GitStarCenter
+
+              /www/server/java/jdk-21.0.2/bin/java -jar GitStarCenter-0.0.1-SNAPSHOT.jar
+            EOF
