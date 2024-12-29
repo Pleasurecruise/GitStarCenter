@@ -25,7 +25,7 @@ spring:
               - read:user
               - public_repo
               - user:follow
-            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+            redirectUri: "https://backend.gitstar.center/oauth2/callback/github"
 
 logging:
   level:
