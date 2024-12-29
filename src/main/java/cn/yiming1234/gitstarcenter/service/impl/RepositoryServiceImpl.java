@@ -85,14 +85,14 @@ public class RepositoryServiceImpl implements RepositoryService {
         QueryWrapper<Repository> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("repo_auth", repoAuth);
         queryWrapper.eq("repo_name", repoName);
-        return repositoryMapper.selectCount(queryWrapper) <= 0;
+        return repositoryMapper.selectCount(queryWrapper) > 0;
     }
 
     @Override
     public boolean checkRepositoryBinding(int id) {
         QueryWrapper<Repository> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", id);
-        return repositoryMapper.selectCount(queryWrapper) <= 0;
+        return repositoryMapper.selectCount(queryWrapper) > 0;
     }
 
 
