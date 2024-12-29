@@ -83,8 +83,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public boolean isRepositoryExist(String repoAuth, String repoName) {
         QueryWrapper<Repository> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("repository_auth", repoAuth);
-        queryWrapper.eq("repository_name", repoName);
+        queryWrapper.eq("repo_auth", repoAuth);
+        queryWrapper.eq("repo_name", repoName);
         return repositoryMapper.selectCount(queryWrapper) <= 0;
     }
 
