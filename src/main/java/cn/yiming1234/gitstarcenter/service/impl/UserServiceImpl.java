@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
         String repoLanguage = repositoryService.getRepositoryLanguage(repositoryAuth, repositoryName);
         String repoBio = repositoryService.getRepositoryBio(repositoryAuth, repositoryName);
         Repository existingRepository = repositoryMapper.selectById(user.getId());
-        if (existingRepository != null) {
+        if (existingRepository == null) {
             Repository repository = new Repository();
             repository.setUserId(user.getId());
             updateRepository(repository, repositoryAuth, repositoryName, repoBio, repoLanguage, currentTime);
