@@ -8,7 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -28,7 +28,9 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     private final JwtUtil jwtUtil;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    @Autowired
+    @Value("${app.oauth2.authorizedRedirectUris[0]}")
+    private String authorizedRedirectUris;
+
     OAuth2LoginSuccessHandler(AppProperties appProperties,
                               JwtUtil jwtUtil,
                               HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository) {
@@ -47,7 +49,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
-        String targetUrl = redirectUri.orElse("http://localhost:5173/oauth2/redirect");
+        String targetUrl = redirectUri.orElse(authorizedRedirectUris);
         String token = jwtUtil.createToken(authentication);
         log.info("token: {}", token);
         return UriComponentsBuilder.fromUriString(targetUrl)

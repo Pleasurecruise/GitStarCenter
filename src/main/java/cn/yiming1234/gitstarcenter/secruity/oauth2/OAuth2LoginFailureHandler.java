@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -18,14 +18,15 @@ import static cn.yiming1234.gitstarcenter.secruity.oauth2.HttpCookieOAuth2Author
 @Component
 public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
-    @Autowired
+    @Value("${app.oauth2.authorizedRedirectUris[0]}")
+    private String authorizedRedirectUris;
     HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         String targetUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
-                .orElse(("http://localhost:5173/oauth2/redirect"));
+                .orElse((authorizedRedirectUris));
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", exception.getLocalizedMessage())
                 .build().toUriString();

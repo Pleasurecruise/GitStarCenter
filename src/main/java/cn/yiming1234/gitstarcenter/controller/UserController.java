@@ -38,12 +38,6 @@ public class UserController {
     @ResponseBody
      void favicon(){
     }
-    
-    // Test page
-    @GetMapping("/test")
-    public String testPage() {
-        return "test";
-    }
 
     /**
      * 获取当前账户信息

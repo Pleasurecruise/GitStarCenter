@@ -155,8 +155,6 @@ public class StarController {
         int sourceUserId = userMapper.selectByUsername(jwtUtil.getNameFromToken(token)).getId();
         int targetUserId = repositoryMapper.selectByRepoAuthAndRepoName(repoAuth, repoName).getUserId();
         if (repositoryService.checkRepositoryBinding(sourceUserId)) {
-            return Result.error(MessageConstant.REPOSITORY_NOT_BOUND);
-        } else {
             Interaction existingInteraction = interactionMapper.selectOne(new QueryWrapper<Interaction>()
                 .eq("source_user_id", sourceUserId)
                 .eq("target_user_id", targetUserId));
@@ -176,6 +174,8 @@ public class StarController {
 
                 interactionMapper.insert(interaction);
             }
+        } else {
+            return Result.error(MessageConstant.REPOSITORY_NOT_BOUND);
         }
         Interaction interaction = interactionMapper.selectBySourceUserIdAndTargetUserId(sourceUserId, targetUserId);
         return Result.success(interaction);
