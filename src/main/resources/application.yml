@@ -22,7 +22,6 @@ spring:
               - read:user
               - public_repo
               - user:follow
-            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
 
 logging:
   level:

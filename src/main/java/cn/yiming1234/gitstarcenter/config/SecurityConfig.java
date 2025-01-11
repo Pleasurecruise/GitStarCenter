@@ -7,7 +7,6 @@ import cn.yiming1234.gitstarcenter.secruity.oauth2.OAuth2LoginSuccessHandler;
 import cn.yiming1234.gitstarcenter.secruity.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import cn.yiming1234.gitstarcenter.secruity.oauth2.OAuth2LoginFailureHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,7 +34,6 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oauth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oauth2LoginFailureHandler;
 
-    @Autowired
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
                       CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
                       OAuth2LoginSuccessHandler oauth2LoginSuccessHandler,
@@ -46,11 +44,9 @@ public class SecurityConfig {
         this.oauth2LoginFailureHandler = oauth2LoginFailureHandler;
     }
 
-    /*
-      By default, Spring OAuth2 uses HttpSessionOAuth2AuthorizationRequestRepository to save
-      the authorization request. But, since our service is stateless, we can't save it in
-      the session. We'll save the request in a Base64 encoded cookie instead.
-    */
+    /**
+     * 使用cookie存储OAuth2授权请求
+     */
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
