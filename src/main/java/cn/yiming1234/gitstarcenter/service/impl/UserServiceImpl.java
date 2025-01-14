@@ -36,25 +36,6 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     *  更新仓库信息
-     */
-    private void updateRepository(Repository repository,
-                                  String repositoryAuth,
-                                  String repositoryName,
-                                  String repoBio,
-                                  String repoLanguage,
-                                  long currentTime) {
-        repository.setRepoAuth(repositoryAuth);
-        repository.setRepoName(repositoryName);
-        repository.setRepoBio(repoBio);
-        repository.setLanguage(repoLanguage);
-        repository.setStarCount(repositoryService.getStarCount(repositoryAuth, repositoryName));
-        repository.setForkCount(repositoryService.getForkCount(repositoryAuth, repositoryName));
-        repository.setWatchCount(repositoryService.getWatchCount(repositoryAuth, repositoryName));
-        repository.setUpdatedAt(new Timestamp(currentTime));
-    }
-
-    /**
      *  转换仓库信息
      */
     private RepositoryVO convertToRepositoryVO(Repository repository) {
@@ -78,6 +59,22 @@ public class UserServiceImpl implements UserService {
         Page<RepositoryVO> repositoryVOPage = new Page<>(page, size);
         repositoryVOPage.setRecords(repositoryPage.getRecords().stream().map(this::convertToRepositoryVO).collect(Collectors.toList()));
         return repositoryVOPage;
+    }
+
+    /**
+     *  更新仓库信息
+     */
+    @Override
+    public void updateRepository(Repository repository,
+                                  String repoAuth,
+                                  String repoName) {
+        repository.setRepoAuth(repoAuth);
+        repository.setRepoName(repoName);
+        repository.setStarCount(repositoryService.getStarCount(repoAuth, repoName));
+        repository.setForkCount(repositoryService.getForkCount(repoAuth, repoName));
+        repository.setWatchCount(repositoryService.getWatchCount(repoAuth, repoName));
+        repository.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        repositoryMapper.updateById(repository);
     }
 
     /**
@@ -163,7 +160,9 @@ public class UserServiceImpl implements UserService {
         if (existingRepository == null) {
             Repository repository = new Repository();
             repository.setUserId(user.getId());
-            updateRepository(repository, repositoryAuth, repositoryName, repoBio, repoLanguage, currentTime);
+            repository.setRepoBio(repoBio);
+            repository.setLanguage(repoLanguage);
+            updateRepository(repository, repositoryAuth, repositoryName);
             repository.setCreatedAt(new Timestamp(currentTime));
             repositoryMapper.insert(repository);
         }

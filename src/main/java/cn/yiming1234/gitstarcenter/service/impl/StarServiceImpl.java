@@ -172,9 +172,18 @@ public class StarServiceImpl implements StarService {
 
     @Override
     public boolean checkWatchStatus(OAuth2AuthorizedClient authorizedClient, String repoAuth, String repoName) throws Exception {
-        String apiUrl = String.format("%s/repos/%s/%s/subscription", githubApiBaseUrl, repoAuth, repoName);
+        String apiUrl = String.format("%s/repos/%s/%s/subscribers", githubApiBaseUrl, repoAuth, repoName);
         try {
-            return checkGitHubStatus(authorizedClient, apiUrl);
+            List<Map<String, Object>> subscribers = webClient.get()
+                .uri(apiUrl)
+                .headers(headers -> headers.setBearerAuth(authorizedClient.getAccessToken().getTokenValue()))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {})
+                .block();
+
+            String currentUsername = authorizedClient.getPrincipalName();
+            return subscribers != null && subscribers.stream()
+                .anyMatch(user -> currentUsername.equals(user.get("login")));
         } catch (Exception e) {
             if (e instanceof WebClientResponseException.NotFound) {
                 return false;

@@ -1,7 +1,9 @@
 package cn.yiming1234.gitstarcenter.controller;
 
 import cn.yiming1234.gitstarcenter.constant.MessageConstant;
+import cn.yiming1234.gitstarcenter.entity.Repository;
 import cn.yiming1234.gitstarcenter.service.RepositoryService;
+import cn.yiming1234.gitstarcenter.service.UserService;
 import cn.yiming1234.gitstarcenter.vo.RepositoryVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
@@ -20,8 +23,32 @@ import java.util.Map;
 public class RepositoryController {
 
     private final RepositoryService repositoryService;
-    public RepositoryController(RepositoryService repositoryService) {
+    private final UserService userService;
+
+    public RepositoryController(RepositoryService repositoryService, UserService userService) {
         this.repositoryService = repositoryService;
+        this.userService = userService;
+    }
+
+    /**
+     * 同步仓库数据
+     */
+    @PostMapping("/repositories/sync")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Map<String, Object>> syncRepositories(@RequestParam String repoAuth,
+                                                                @RequestParam String repoName) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Repository repository = repositoryService.getRepository(repoAuth, repoName);
+            userService.updateRepository(repository, repoAuth, repoName);
+            response.put("code", 1);
+            response.put("message", "success");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("code", 0);
+            response.put("message", MessageConstant.REPOSITORY_SYNC_FAILURE);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     /**

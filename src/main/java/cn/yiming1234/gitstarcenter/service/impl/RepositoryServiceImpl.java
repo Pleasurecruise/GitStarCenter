@@ -53,6 +53,14 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     @Override
+    public Repository getRepository(String repoAuth, String repoName) {
+        QueryWrapper<Repository> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("repo_auth", repoAuth);
+        queryWrapper.eq("repo_name", repoName);
+        return repositoryMapper.selectOne(queryWrapper);
+    }
+
+    @Override
     public Page<RepositoryVO> getRepositories(int page, int size) {
         Page<Repository> repositoryPage = new Page<>(page, size);
         repositoryPage = repositoryMapper.selectPage(repositoryPage, null);

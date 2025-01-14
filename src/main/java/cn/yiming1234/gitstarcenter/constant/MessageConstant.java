@@ -27,4 +27,6 @@ public class MessageConstant {
     public static final String URL_INVALID = "Invalid URL.";
     public static final String UNKNOWN_ACTION = "Unknown action.";
     public static final String OPERATION_TOO_FREQUENT = "Operation too frequent.";
+    public static final String INTERACTION_INSERTION_FAILURE = "Failed to insert interaction.";
+    public static final Object REPOSITORY_SYNC_FAILURE = "Failed to sync repository.";
 }

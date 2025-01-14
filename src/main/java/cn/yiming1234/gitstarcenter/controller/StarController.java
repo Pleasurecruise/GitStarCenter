@@ -61,6 +61,9 @@ public class StarController {
         return authorizedClientService.loadAuthorizedClient(clientRegistrationId, oauth2User.getName());
     }
 
+    /**
+     * 执行操作
+     */
     private Result<String> performAction(OAuth2AuthorizedClient authorizedClient, String repoAuth, String repoName, Integer sourceUserId, Integer targetUserId, String action) {
         try {
             // 限制频繁操作
@@ -155,24 +158,29 @@ public class StarController {
         int sourceUserId = userMapper.selectByUsername(jwtUtil.getNameFromToken(token)).getId();
         int targetUserId = repositoryMapper.selectByRepoAuthAndRepoName(repoAuth, repoName).getUserId();
         if (repositoryService.checkRepositoryBinding(sourceUserId)) {
-            Interaction existingInteraction = interactionMapper.selectOne(new QueryWrapper<Interaction>()
-                .eq("source_user_id", sourceUserId)
-                .eq("target_user_id", targetUserId));
-            if (existingInteraction == null) {
-                Interaction interaction = new Interaction();
-                interaction.setSourceUserId(sourceUserId);
-                interaction.setTargetUserId(targetUserId);
+            try {
+                Interaction existingInteraction = interactionMapper.selectOne(new QueryWrapper<Interaction>()
+                    .eq("source_user_id", sourceUserId)
+                    .eq("target_user_id", targetUserId));
+                if (existingInteraction == null) {
+                    Interaction interaction = new Interaction();
+                    interaction.setSourceUserId(sourceUserId);
+                    interaction.setTargetUserId(targetUserId);
 
-                boolean isFollowing = starService.checkFollowStatus(authorizedClient, targetUserId);
-                interaction.setIsFollow(isFollowing);
-                boolean hasStarred = starService.checkStarStatus(authorizedClient, repoAuth, repoName);
-                interaction.setIsStar(hasStarred);
-                boolean hasForked = starService.checkForkStatus(authorizedClient, repoAuth, repoName);
-                interaction.setIsFork(hasForked);
-                boolean hasWatched = starService.checkWatchStatus(authorizedClient, repoAuth, repoName);
-                interaction.setIsWatch(hasWatched);
+                    boolean isFollowing = starService.checkFollowStatus(authorizedClient, targetUserId);
+                    interaction.setIsFollow(isFollowing);
+                    boolean hasStarred = starService.checkStarStatus(authorizedClient, repoAuth, repoName);
+                    interaction.setIsStar(hasStarred);
+                    boolean hasForked = starService.checkForkStatus(authorizedClient, repoAuth, repoName);
+                    interaction.setIsFork(hasForked);
+                    boolean hasWatched = starService.checkWatchStatus(authorizedClient, repoAuth, repoName);
+                    interaction.setIsWatch(hasWatched);
 
-                interactionMapper.insert(interaction);
+                    interactionMapper.insert(interaction);
+                }
+            } catch (Exception e) {
+                log.error("Error: {}", e.getMessage());
+                return Result.error(MessageConstant.INTERACTION_INSERTION_FAILURE);
             }
         } else {
             return Result.error(MessageConstant.REPOSITORY_NOT_BOUND);

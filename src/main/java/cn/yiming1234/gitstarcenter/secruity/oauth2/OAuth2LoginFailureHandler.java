@@ -1,10 +1,10 @@
 package cn.yiming1234.gitstarcenter.secruity.oauth2;
 
 import cn.yiming1234.gitstarcenter.util.CookieUtil;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -20,10 +20,11 @@ public class OAuth2LoginFailureHandler extends SimpleUrlAuthenticationFailureHan
 
     @Value("${app.oauth2.authorizedRedirectUris[0]}")
     private String authorizedRedirectUris;
+    @Autowired
     HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         String targetUrl = CookieUtil.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
                 .orElse((authorizedRedirectUris));
