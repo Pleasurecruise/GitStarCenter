@@ -2,7 +2,6 @@ package cn.yiming1234.gitstarcenter.controller;
 
 import cn.yiming1234.gitstarcenter.result.Result;
 import cn.yiming1234.gitstarcenter.service.VisitorService;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +22,8 @@ public class VisitorController {
 
     @PostMapping("/visitor")
     @PreAuthorize("hasRole('USER')")
-    public void recordVisit(@RequestBody VisitorRequest request) {
-        visitorService.recordVisit(request.getUserUUID());
+    public void recordVisit(@RequestBody String userUUID) {
+        visitorService.recordVisit(userUUID);
     }
 
     @GetMapping("/uv")
@@ -32,9 +31,4 @@ public class VisitorController {
     public Result<Long> getDailyUV() {
         return Result.success(visitorService.countUniqueVisitors(LocalDate.now()));
     }
-}
-
-@Data
-class VisitorRequest {
-    private String userUUID;
 }
