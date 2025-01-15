@@ -5,9 +5,11 @@ import cn.yiming1234.gitstarcenter.entity.User;
 import cn.yiming1234.gitstarcenter.vo.RepositoryVO;
 import cn.yiming1234.gitstarcenter.vo.UserVO;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 
 public interface UserService {
     void updateRepository(Repository repository, String repoAuth, String repoName);
+    void syncRepository(OAuth2AuthorizedClient authorizedClient, String repoAuth, String repoName) throws Exception;
     UserVO getAccountInfo(String username);
     UserVO getTargetAccountInfo(String repoAuth, String repoName);
     void saveUserInfo(User user);

@@ -8,11 +8,14 @@ import cn.yiming1234.gitstarcenter.mapper.InteractionMapper;
 import cn.yiming1234.gitstarcenter.mapper.RepositoryMapper;
 import cn.yiming1234.gitstarcenter.mapper.UserMapper;
 import cn.yiming1234.gitstarcenter.service.RepositoryService;
+import cn.yiming1234.gitstarcenter.service.StarService;
 import cn.yiming1234.gitstarcenter.service.UserService;
 import cn.yiming1234.gitstarcenter.vo.RepositoryVO;
 import cn.yiming1234.gitstarcenter.vo.UserVO;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -27,12 +30,14 @@ public class UserServiceImpl implements UserService {
     private final RepositoryMapper repositoryMapper;
     private final RepositoryService repositoryService;
     private final InteractionMapper interactionMapper;
+    private final StarService starService;
 
-    public UserServiceImpl(UserMapper userMapper, RepositoryMapper repositoryMapper, RepositoryService repositoryService, InteractionMapper interactionMapper) {
+    public UserServiceImpl(UserMapper userMapper, RepositoryMapper repositoryMapper, RepositoryService repositoryService, InteractionMapper interactionMapper, StarService starService) {
         this.userMapper = userMapper;
         this.repositoryMapper = repositoryMapper;
         this.repositoryService = repositoryService;
         this.interactionMapper = interactionMapper;
+        this.starService = starService;
     }
 
     /**
@@ -62,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     *  更新仓库信息
+     * 更新仓库信息
      */
     @Override
     public void updateRepository(Repository repository,
@@ -75,6 +80,39 @@ public class UserServiceImpl implements UserService {
         repository.setWatchCount(repositoryService.getWatchCount(repoAuth, repoName));
         repository.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         repositoryMapper.updateById(repository);
+    }
+
+    /**
+     * 同步互动数据
+     */
+    @Override
+    public void syncRepository(OAuth2AuthorizedClient authorizedClient, String repoAuth, String repoName) throws Exception {
+        boolean isStarred = starService.checkStarStatus(authorizedClient, repoAuth, repoName);
+        boolean isForked = starService.checkForkStatus(authorizedClient, repoAuth, repoName);
+        boolean isWatched = starService.checkWatchStatus(authorizedClient, repoAuth, repoName);
+
+        int sourceUserId = userMapper.selectByUsername(authorizedClient.getPrincipalName()).getId();
+        int targetUserId = repositoryMapper.selectByRepoAuthAndRepoName(repoAuth, repoName).getUserId();
+        Interaction interaction = interactionMapper.selectOne(new QueryWrapper<Interaction>()
+                .eq("source_user_id", sourceUserId)
+                .eq("target_user_id", targetUserId));
+        if (interaction != null) {
+            interaction.setIsStar(isStarred);
+            interaction.setIsFork(isForked);
+            interaction.setIsWatch(isWatched);
+            log.info("Updating interaction: {}", interaction);
+            interaction.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            interactionMapper.updateById(interaction);
+        } else {
+            interaction = new Interaction();
+            interaction.setSourceUserId(sourceUserId);
+            interaction.setTargetUserId(targetUserId);
+            interaction.setIsStar(isStarred);
+            interaction.setIsFork(isForked);
+            interaction.setIsWatch(isWatched);
+            interaction.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            interactionMapper.insert(interaction);
+        }
     }
 
     /**

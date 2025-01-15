@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -175,7 +176,8 @@ public class StarController {
                     interaction.setIsFork(hasForked);
                     boolean hasWatched = starService.checkWatchStatus(authorizedClient, repoAuth, repoName);
                     interaction.setIsWatch(hasWatched);
-
+                    interaction.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+                    interaction.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
                     interactionMapper.insert(interaction);
                 }
             } catch (Exception e) {
